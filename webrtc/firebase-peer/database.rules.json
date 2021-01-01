@@ -1,0 +1,32 @@
+{
+  "rules": {
+    "rooms": {
+      ".write": "auth.uid !== null && !data.exists()",
+
+      "$roomKey": {
+        ".read": "auth.uid != null && data.hasChild('auth/peers/' + auth.uid)",
+
+        "auth": {
+          ".write": "auth.uid != null && data.child('owner').val() == auth.uid",
+          ".validate": "newData.hasChild('peers/' + newData.child('owner').val())"
+        },
+
+        "channels": {
+          "$channelKey": {
+            ".write": "auth.uid != null && data.parent().parent().hasChild('auth/peers/' + auth.uid) && (!data.exists() || data.hasChild('peers/' + auth.uid))",
+            ".validate": "newData.hasChild('peers/' + auth.uid)"
+          }
+        }
+      }
+    },
+
+    "messages": {
+      "$roomKey": {
+        "$channelKey": {
+          ".read": "auth.uid != null && root.hasChild('rooms/' + $roomKey + '/channels/' + $channelKey + '/peers/' + auth.uid)",
+          ".write": "auth.uid != null && root.hasChild('rooms/' + $roomKey + '/channels/' + $channelKey + '/peers/' + auth.uid)"
+        }
+      }
+    }
+  }
+}

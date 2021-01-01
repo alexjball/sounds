@@ -13,7 +13,9 @@
     "editor.formatOnSave": true,
     "files.autoSave": "off",
     "files.associations": {
-      "rush.json": "jsonc"
+      "rush.json": "jsonc",
+      "heft.json": "jsonc",
+      "database.rules.json": "jsonc"
     }
   },
   "extensions": {
