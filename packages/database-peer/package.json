@@ -1,7 +1,7 @@
 {
-  "name": "firebase-peer",
+  "name": "@alexjball/database-peer",
   "version": "1.0.0",
-  "description": "WebRTC peer connection using firebase for signalling",
+  "description": "Authenticated P2P communication using Firebase Realtime Database",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
