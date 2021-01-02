@@ -7,6 +7,7 @@
   "scripts": {
     "build": "heft build --clean",
     "start": "node lib/index.js",
+    "test": "heft test",
     "emulator": "firebase emulators:start",
     "test:watch": "heft test --watch --debug-heft-reporter"
   },

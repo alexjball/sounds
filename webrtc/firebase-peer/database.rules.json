@@ -1,9 +1,8 @@
 {
   "rules": {
     "rooms": {
-      ".write": "auth.uid !== null && !data.exists()",
-
       "$roomKey": {
+        ".write": "auth.uid !== null && !data.exists()",
         ".read": "auth.uid != null && data.hasChild('auth/peers/' + auth.uid)",
 
         "auth": {

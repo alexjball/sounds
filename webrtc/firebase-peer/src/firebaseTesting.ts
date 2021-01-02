@@ -63,3 +63,23 @@ export async function deleteTestApp(
     firebaseTesting.apps().map(async (app) => await app.delete())
   );
 }
+
+export const appConfig1: object = {
+  apiKey: "AIzaSyDK9k4jwbvdkHFDnB51VnY4JkspVQeuU_w",
+  authDomain: "sounds-dev.firebaseapp.com",
+  databaseURL: "https://sounds-dev-default-rtdb.firebaseio.com",
+  projectId: "sounds-dev",
+  storageBucket: "sounds-dev.appspot.com",
+  messagingSenderId: "207576435007",
+  appId: "1:207576435007:web:3cd6a40849dd2d9dd76b8a",
+};
+
+export const appConfig2: object = {
+  apiKey: "AIzaSyDK9k4jwbvdkHFDnB51VnY4JkspVQeuU_w",
+  authDomain: "sounds-dev.firebaseapp.com",
+  databaseURL: "https://sounds-dev-default-rtdb.firebaseio.com",
+  projectId: "sounds-dev",
+  storageBucket: "sounds-dev.appspot.com",
+  messagingSenderId: "207576435007",
+  appId: "1:207576435007:web:980b324e33ab5f8bd76b8a",
+};

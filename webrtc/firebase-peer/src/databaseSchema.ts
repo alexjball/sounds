@@ -1,3 +1,5 @@
+import { Database, Reference } from "./firebase";
+
 /**
  * peers send messages to each other over channels in a room.
  */
@@ -51,3 +53,33 @@ export interface Peers {
 export type Message = unknown;
 export type Void = unknown;
 export type Uid = string;
+export type Key = string;
+
+export const present: Void = true;
+export interface User {
+  uid: Uid;
+}
+
+export class References {
+  private db: Database;
+
+  public constructor(db: Database) {
+    this.db = db;
+  }
+
+  public rooms(): Reference {
+    return this.db.ref("rooms");
+  }
+
+  public room(roomKey: string): Reference {
+    return this.db.ref(`rooms/${roomKey}`);
+  }
+
+  public channel(roomKey: Key, channelKey: Key): Reference {
+    return this.db.ref(`rooms/${roomKey}/channels/${channelKey}`);
+  }
+
+  public messages(roomKey: Key, channelKey: Key): Reference {
+    return this.db.ref(`messages/${roomKey}/${channelKey}`);
+  }
+}

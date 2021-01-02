@@ -1,5 +1,6 @@
+import { DatabasePeer } from "./databasePeer";
 import { Channel, Room, RoomAuthorization } from "./databaseSchema";
-import { Reference, Database, DataSnapshot } from "./firebase";
+import { Reference, Database } from "./firebase";
 import {
   createTestApp,
   deleteTestApp,
@@ -142,6 +143,11 @@ describe("Security Rules", () => {
       expect(createdRoom).toEqual(expectedRoom);
     });
 
+    it("authenticated users can create multiple rooms", async () => {
+      await expect(db.ref("rooms").push(expectedRoom)).toResolve();
+      await expect(db.ref("rooms").push(expectedRoom)).toResolve();
+    });
+
     it("peers can read", async () => {
       const db2 = createTestApp({ auth: auth2 }).database();
 
@@ -278,29 +284,33 @@ describe("Security Rules", () => {
     });
 
     it("Channel peers can stream sequential messages", async () => {
+      const peer1 = new DatabasePeer(db, auth);
       const db2 = createTestApp({ auth: auth2 }).database();
+      const peer2 = new DatabasePeer(db2, auth2);
       const numMessages = 10;
       const actualMessages: unknown[] = [],
         expectedMessages: unknown[] = [];
-      const latestMessageStream = db2.ref(path).orderByKey().limitToLast(1);
+
+      let subscription: any;
       const doneStreaming = new Promise<void>((resolve, reject) => {
-        const callback = (snapshot: DataSnapshot): void => {
-          actualMessages.push(snapshot.val());
-          if (actualMessages.length === numMessages) {
-            resolve();
-            latestMessageStream.off("child_added", callback);
+        subscription = peer2.subscribeToChannel(
+          roomRef.key!,
+          expectedChannel,
+          (message) => {
+            actualMessages.push(message);
+            if (actualMessages.length === numMessages) {
+              resolve();
+            }
           }
-        };
-        latestMessageStream.on("child_added", callback);
+        );
       });
 
-      // There is a race between attaching the callback and pushing messages.
-      await pauseFor(10);
+      await subscription;
 
       for (let i = 0; i < numMessages; i++) {
         const message = { message: i };
         expectedMessages.push(message);
-        await db.ref(path).push(message);
+        await peer1.publishMessage(roomRef.key!, expectedChannel, message);
       }
       await doneStreaming;
 
@@ -309,15 +319,11 @@ describe("Security Rules", () => {
 
     it("Non-channel peers cannot stream messages", async () => {
       const db3 = createTestApp({ auth: auth3 }).database();
-      const latestMessageStream = db3.ref(path).orderByKey().limitToLast(1);
-      const check = new Promise<void>((resolve, reject) =>
-        latestMessageStream.on("child_added", () => resolve(), reject)
-      );
-      await expect(check).toReject();
+      const peer3 = new DatabasePeer(db3, auth3);
+
+      await expect(
+        peer3.subscribeToChannel(roomRef.key!, expectedChannel, fail)
+      ).toReject();
     });
   });
 });
-
-function pauseFor(waitMs: number): Promise<void> {
-  return new Promise((resolve, reject) => setTimeout(resolve, waitMs));
-}
