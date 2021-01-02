@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "build": "heft build --clean",
+    "build": "heft build --clean || true",
     "start": "node lib/index.js",
     "test": "heft test",
     "emulator": "firebase emulators:start",

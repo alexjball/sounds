@@ -370,8 +370,8 @@
    */
   "projects": [
     {
-      "packageName": "firebase-peer",
-      "projectFolder": "webrtc/firebase-peer"
+      "packageName": "@alexjball/database-peer",
+      "projectFolder": "packages/database-peer"
     }
     // {
     //   /**
